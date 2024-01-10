@@ -1,8 +1,9 @@
-import sys;
-import os;
+import sys
+import os
+import time
+import random
 
 screen_width = 100
-
 
 class Player:
     def __init__(self):
@@ -10,8 +11,21 @@ class Player:
         self.hp = 0
         self.mp = 0
         self.status_effect = []
-        self.location = 'Starting'
+        self.location = 'a1'
+        self.game_over = False
 
+class enemy:
+    def __init__(self, hp,attack, defense, health):
+        self.hp = hp
+        self.attack = attack
+        self.defense = defense
+        self.health = health
+
+
+
+myPlayer = Player()
+AEnemy = enemy(10, 10, 10, 10) #
+#deze is een aanroeping van een function die moet je intialiseren bij elk def(methode) probeer ook classes als dat kan anders googlen
 
 # Title Screen RPG
 def title_screen_selections():
@@ -35,7 +49,7 @@ def title_screen_selections():
 
 
 def title_screen():
-    os.system('Clear')
+    os.system('clear')
     print('|------------------------------|')
     print('| Welcome to the Text RPG Game |')
     print('|------------------------------|')
@@ -44,7 +58,7 @@ def title_screen():
     print('|            -Quit-            |')
     print('|------------------------------|')
     title_screen_selections()
-
+title_screen() #voorbeeld
 
 def help_menu():
     print('|-------------------------------------------------|')
@@ -55,52 +69,106 @@ def help_menu():
     print('| ^Look^ is the command to inspect something      |')
     print('|-------------------------------------------------|')
     title_screen_selections()
-
-
-player = Player()
-
+help_menu()
 
 def start_game():
-    """""
-    # a1 a2.. player starts at b2 / dictionary system grid:
-    _________________
-    |A1 |A2 |A3 |A4 |
-    _________________
-    |B1 |B2 |B3 |B4 |
-    _________________
-    |C1 |C2 |C3 |C4 |
-    _________________
-    |D1 |D2 |D3 |D4 |
-    _________________
+    maingame_loop()
+start_game()
 
-    """""
-    ### als de input werkt zorg ervoor om fouten op te vangen
+def print_location():
+    print('\n' + ('#' * (4 + len(myPlayer.location))))
+    print('#' + myPlayer.location.lower() + '#"')
+    print('#' + zonemap[myPlayer.location][DESCRIPTION] + '#')
+    print('\n' + ('#' * (4 + len(myPlayer.location))))
+print_location()
 
-    # Constants
-    ZONENAME = 'ZONENAME'
-    DESCRIPTION = 'DESCRIPTION'
-    EXAMINATION = 'EXAMINATION'
-    UP = 'UP'
-    DOWN = 'DOWN'
-    LEFT = 'LEFT'
-    RIGHT = 'RIGHT'
-    SOLVED = 'SOLVED'
 
-    solved_places = {'a1': False, 'a2': False, 'a3': False, 'a4': False,
-                     'b1': False, 'b2': False, 'b3': False, 'b4': False,
-                     'c1': False, 'c2': False, 'c3': False, 'c4': False,
-                     'd1': False, 'd2': False, 'd3': False, 'd4': False, }
+def prompt():
+    print("\n" + "================================")
+    print("What would you do?")
+    action = input("> ")
+    acceptable_actions = ['move', 'go', 'travel', 'walk', 'quit', 'examine', 'inspect', 'interact', 'look']
+    while action.lower() not in acceptable_actions:
+        print("Unknown error has been detected by the action reviewer please try again!\n")
+        action = input("> ")
+        if action.lower() == 'quit':
+            sys.exit()
+        if action.lower() in ['move', 'go', 'travel', 'walk']:
+            player_move(action.lower())
+        if action.lower() in ['examine', 'inspect', 'interact', 'look']:
+            player_examine(action.lower())
 
-    zonemap = {
-        'a1': {
-            ZONENAME: "Engimal Town Entrance",
-            DESCRIPTION: 'Entrance Engimal Town',
-            EXAMINATION: 'Many houses are fested here but no one is here',
-            SOLVED: False,
-            UP: (' '),
-            DOWN: ('b1'),
-            LEFT: (' '),
-            RIGHT: ('a2'),
+
+def player_move(my_action):
+    ask = "Where would you like to move to?\n"
+    dest = input(ask)
+    if dest in ['up', 'north']:
+        destination = zonemap[myPlayer.location][UP]
+        movement_handler(destination)
+    elif dest in ['left', 'east']:
+        destination = zonemap[myPlayer.location][LEFT]
+        movement_handler(destination)
+    elif dest in ['right', 'west']:
+        destination = zonemap[myPlayer.location][RIGHT]
+        movement_handler(destination)
+    elif dest in ['down', 'south']:
+        destination = zonemap[myPlayer.location][DOWN]
+        movement_handler(destination)
+
+
+def movement_handler(destination):
+    print("\n" + "You have moved to " + destination + ".")
+    myPlayer.location = destination
+    print_location()
+
+
+def player_examine(action):
+    if zonemap[myPlayer.location][SOLVED]:
+        print('You are already tired of this zone!')
+    else:
+        print('Ah, a new location to be explored')
+
+
+def maingame_loop():
+    while not myPlayer.game_over:
+        prompt()
+
+
+def setup_game():
+    os.system('clear')
+    question1 = 'Are you ready to start the game?'
+    for character in question1:
+        sys.stdout.write(character)
+        sys.stdout.flush()
+        time.sleep(0.10)  # Fixed the syntax error here
+    title_screen()
+
+
+# Constants
+ZONENAME = 'ZONENAME'
+DESCRIPTION = 'DESCRIPTION'
+EXAMINATION = 'EXAMINATION'
+UP = 'UP'
+DOWN = 'DOWN'
+LEFT = 'LEFT'
+RIGHT = 'RIGHT'
+SOLVED = 'SOLVED'
+
+solved_places = {'a1': False, 'a2': False, 'a3': False, 'a4': False,
+                 'b1': False, 'b2': False, 'b3': False, 'b4': False,
+                 'c1': False, 'c2': False, 'c3': False, 'c4': False,
+                 'd1': False, 'd2': False, 'd3': False, 'd4': False}
+
+zonemap = {
+    'a1': {
+        ZONENAME: "Engimal Town Entrance",
+        DESCRIPTION: 'Entrance Engimal Town',
+        EXAMINATION: 'Many houses are fested here but no one is here',
+        SOLVED: False,
+        UP: (' '),
+        DOWN: ('b1'),
+        LEFT: (' '),
+        RIGHT: ('a2'),
 
         },
         'a2': {
@@ -265,7 +333,7 @@ def start_game():
 
 def print_location():
     print('\n' + ('#' * (4 + len(Player.location))))
-    print('#' + player.location.lower() + '#"')
+    print('#' + myPlayer.location.lower() + '#"')
     print('#' + zonemap[Player.position][DESCRIPTION] + '#')
     print('\n' + ('#' * (4 + len(Player.location))))
 
@@ -286,7 +354,7 @@ def prompt():
             player_examine(action.lower())
 
 
-def player_move(myAction):
+def player_move(myaction):
     ask = "Where would like to move to?\n"
     dest = input(ask)
     if dest in ['up' 'north']:
@@ -310,11 +378,53 @@ def movement_handler(destination):
 
 
 def player_examine(action):
-    if (zonemap[myPlayer.location][SOLVED]
-            print("You are already tired for this zone!")
+    if zonemap[myPlayer.location][SOLVED]:
+        print('You are already tired for this zone!')
     else:
-        print("Ah a new location to be explored")
+        print('Ah, a new location to be explored')
 
 
-def start_Game():
-    return
+
+
+def setup_game():
+    os.system('clear')
+    question1 = 'Are you ready to start the game?'
+    for character in question1:
+        sys.stdout.write(character)
+        sys.stdout.flush()
+        time.sleep(0,10)
+def battle(player, enemy):
+    while player.health > 0 and enemy.health > 0:
+        print(f"{player.name}'s Health: {player.health} | {enemy.name}'s Health: {enemy.health}")
+
+        #player attacks turn
+        player_attack = random.randint(1, player.attack)
+        enemy_defense = random.randint(1, enemy.defense)
+        damage_to_enemy = max(0, player_attack - enemy_defense)
+        enemy.health -= damage_to_enemy
+        print(f"{player.name} attacks the {enemy.name} for {damage_to_enemy} damage")
+
+        if enemy.health <= 0:
+            print(f"{enemy.name} has been defeated!")
+            break
+        #Enemy attacks turn
+        enemy_attack = random.randint(1, enemy.attack)
+        player_defense = random.randint(1, player.defense)
+        damage_to_player = max(0, enemy_attack - player_defense)
+        player.health -= damage_to_player
+        print(f"{enemy.name} attacks the {player.name} for {damage_to_player} damage")
+        if player.health <= 0:
+            print(f"{player.name} has been defeated!")
+            break
+
+    player1 = player("Human", 100, 10, 5)
+    enemy1 = enemy("GarbageMonster", 100, 8, 3)
+
+    setup_game()
+    battle(player1, enemy1)
+def maingameloop():
+    while myPlayer.gameover is False:
+        prompt()
+    def start_game():
+        return
+
