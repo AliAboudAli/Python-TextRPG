@@ -3,29 +3,37 @@ import os
 import time
 import random
 
-screen_width = 100
+screen_width = 150
 
 class Player:
     def __init__(self):
         self.name = ''
-        self.hp = 0
-        self.mp = 0
-        self.status_effect = []
+        self.health = 100
+        self.attack = 10
+        self.defense = 5
         self.location = 'a1'
         self.game_over = False
 
-class enemy:
-    def __init__(self, hp,attack, defense, health):
-        self.hp = hp
+class Enemy:
+    def __init__(self, name, health, attack, defense, stats, specialattack):
+        self.name = name
+        self.health = health
         self.attack = attack
         self.defense = defense
-        self.health = health
+        self.stats = stats
+        self.specialstats = specialattack
+
+myPlayer = Player() ## stats en specialattack definen
+Enemy1 = Enemy("GarbageMonster", 100, 8, 3, 10, 10) #inspired by pokemon gen 5
+Enemy2 = Enemy("CorruptedSkeleton", 100, 13, 6, 10, 10) #Youtuber minecraft episode aka IJordiI
+Enemy3 = Enemy("DemonWizard", 80, 17, 10, 10, 10) #Clash of clans and Rezero anime
+Enemy4 = Enemy("MeltingGoblin", 200, 20, 40, 10, 10)#Chernobyl
+Enemy5 = Enemy("Wolf", 70, 4, 6, 10, 10)#nature
+Enemy6 = Enemy("LandShark", 200, 20, 12, 10, 10)#Exoplants
+Enemy7 = Enemy("StoneAngel", 400, 3, 30, 10, 10)#HorrorMinecraft
+Enemy8 = Enemy("CrystalGolem", 300, 45, 90, 10, 10)#endboss
 
 
-
-myPlayer = Player()
-AEnemy = enemy(10, 10, 10, 10) #
-#deze is een aanroeping van een function die moet je intialiseren bij elk def(methode) probeer ook classes als dat kan anders googlen
 
 # Title Screen RPG
 def title_screen_selections():
@@ -47,7 +55,6 @@ def title_screen_selections():
             elif option == 'quit':
                 sys.exit()
 
-
 def title_screen():
     os.system('clear')
     print('|------------------------------|')
@@ -58,7 +65,8 @@ def title_screen():
     print('|            -Quit-            |')
     print('|------------------------------|')
     title_screen_selections()
-title_screen() #voorbeeld
+title_screen()
+
 
 def help_menu():
     print('|-------------------------------------------------|')
@@ -68,20 +76,15 @@ def help_menu():
     print('| -Type your command to do something              |')
     print('| ^Look^ is the command to inspect something      |')
     print('|-------------------------------------------------|')
-    title_screen_selections()
 help_menu()
-
 def start_game():
     maingame_loop()
-start_game()
 
 def print_location():
     print('\n' + ('#' * (4 + len(myPlayer.location))))
-    print('#' + myPlayer.location.lower() + '#"')
+    print('#' + myPlayer.location.lower() + '#')
     print('#' + zonemap[myPlayer.location][DESCRIPTION] + '#')
     print('\n' + ('#' * (4 + len(myPlayer.location))))
-print_location()
-
 
 def prompt():
     print("\n" + "================================")
@@ -97,8 +100,7 @@ def prompt():
             player_move(action.lower())
         if action.lower() in ['examine', 'inspect', 'interact', 'look']:
             player_examine(action.lower())
-
-
+prompt()
 def player_move(my_action):
     ask = "Where would you like to move to?\n"
     dest = input(ask)
@@ -115,12 +117,10 @@ def player_move(my_action):
         destination = zonemap[myPlayer.location][DOWN]
         movement_handler(destination)
 
-
 def movement_handler(destination):
     print("\n" + "You have moved to " + destination + ".")
     myPlayer.location = destination
     print_location()
-
 
 def player_examine(action):
     if zonemap[myPlayer.location][SOLVED]:
@@ -128,11 +128,9 @@ def player_examine(action):
     else:
         print('Ah, a new location to be explored')
 
-
 def maingame_loop():
     while not myPlayer.game_over:
         prompt()
-
 
 def setup_game():
     os.system('clear')
@@ -142,7 +140,7 @@ def setup_game():
         sys.stdout.flush()
         time.sleep(0.10)  # Fixed the syntax error here
     title_screen()
-
+setup_game()
 
 # Constants
 ZONENAME = 'ZONENAME'
@@ -385,7 +383,6 @@ def player_examine(action):
 
 
 
-
 def setup_game():
     os.system('clear')
     question1 = 'Are you ready to start the game?'
@@ -425,6 +422,14 @@ def battle(player, enemy):
 def maingameloop():
     while myPlayer.gameover is False:
         prompt()
-    def start_game():
-        return
+def start_game():
+    return
 
+#to do list
+#################
+#define the enemies in the zonelist and attackable
+#NPC's
+#stats
+#Ascii en verhaal (AI)
+#special stats
+##################
